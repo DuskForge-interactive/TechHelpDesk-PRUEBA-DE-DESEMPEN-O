@@ -14,7 +14,7 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { AssignTicketDto } from './dto/assign-ticket.dto';
 import { UpdateTicketStatusDto } from './dto/update-ticket-status.dto';
 import { FilterTicketsDto } from './dto/filter-tickets.dto';
-import { UserRole } from '../users/entities/user.entity';
+import { UserRole } from '../users/enums/user-role.enum';
 
 @Injectable()
 export class TicketsService {
@@ -29,7 +29,6 @@ export class TicketsService {
     private readonly categoryRepo: Repository<Category>,
   ) {}
 
-  // 1) Crear ticket como CLIENTE
   async createForClient(userId: string, dto: CreateTicketDto) {
     const client = await this.clientRepo.findOne({
       where: { userId },
@@ -61,7 +60,6 @@ export class TicketsService {
     return this.ticketRepo.save(ticket);
   }
 
-  // 2) Asignar ticket a técnico (ADMIN)
   async assignToTechnician(ticketId: number, dto: AssignTicketDto) {
     const ticket = await this.ticketRepo.findOne({
       where: { id: ticketId },
@@ -80,7 +78,6 @@ export class TicketsService {
       throw new BadRequestException('El técnico no existe');
     }
 
-    // Regla: técnico no puede tener más de 5 tickets EN_PROGRESO
     const inProgressCount = await this.ticketRepo
       .createQueryBuilder('t')
       .innerJoin('t.technician', 'tech')
@@ -96,11 +93,9 @@ export class TicketsService {
 
     ticket.technician = technician;
 
-    // si está OPEN, podrías cambiarlo a IN_PROGRESS automáticamente si quieres
     return this.ticketRepo.save(ticket);
   }
 
-  // 3) Cambiar estado del ticket (técnico/admin)
   async updateStatus(
     ticketId: number,
     dto: UpdateTicketStatusDto,
@@ -115,7 +110,6 @@ export class TicketsService {
       throw new NotFoundException('Ticket no encontrado');
     }
 
-    // Sólo el técnico asignado o el admin pueden cambiar estado
     if (currentUser.role === UserRole.TECHNICIAN) {
       if (!ticket.technician || ticket.technician.userId !== currentUser.id) {
         throw new ForbiddenException(
@@ -153,7 +147,6 @@ export class TicketsService {
     }
   }
 
-  // 4) Listar tickets según rol
   async findAllForUser(
     currentUser: { id: string; role: UserRole },
     filters: FilterTicketsDto,
@@ -179,7 +172,6 @@ export class TicketsService {
     } else if (currentUser.role === UserRole.TECHNICIAN) {
       qb.andWhere('tech.user_id = :userId', { userId: currentUser.id });
     } else {
-      // ADMIN ve todo, sin filtro extra
     }
 
     return qb.orderBy('t.created_at', 'DESC').getMany();
@@ -257,3 +249,4 @@ export class TicketsService {
     return qb.orderBy('t.created_at', 'DESC').getMany();
   }
 }
+

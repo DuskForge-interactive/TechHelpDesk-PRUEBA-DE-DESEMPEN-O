@@ -24,7 +24,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { UserRole } from '../users/entities/user.entity';
+import { UserRole } from '../users/enums/user-role.enum';
 
 @ApiTags('tickets')
 @ApiBearerAuth()
@@ -33,7 +33,6 @@ import { UserRole } from '../users/entities/user.entity';
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
-  // Cliente crea ticket
   @Post()
   @Roles(UserRole.CLIENT)
   @ApiOperation({ summary: 'Crear un ticket (CLIENT)' })
@@ -45,7 +44,6 @@ export class TicketsController {
     return this.ticketsService.createForClient(user.id, dto);
   }
 
-  // Admin asigna ticket a técnico
   @Patch(':id/assign')
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Asignar ticket a un técnico (ADMIN)' })
@@ -57,7 +55,6 @@ export class TicketsController {
     return this.ticketsService.assignToTechnician(id, dto);
   }
 
-  // Técnico o Admin cambian estado
   @Patch(':id/status')
   @Roles(UserRole.TECHNICIAN, UserRole.ADMIN)
   @ApiOperation({ summary: 'Actualizar estado de un ticket' })
@@ -70,7 +67,6 @@ export class TicketsController {
     return this.ticketsService.updateStatus(id, dto, user);
   }
 
-  // Listado según rol + filtros
   @Get()
   @ApiOperation({ summary: 'Listar tickets visibles para el usuario autenticado' })
   @ApiResponse({ status: 200, description: 'Listado de tickets retornado' })
@@ -81,7 +77,6 @@ export class TicketsController {
     return this.ticketsService.findAllForUser(user, filters);
   }
 
-  // Detalle del ticket (respetando visibilidad por rol)
   @Get(':id')
   @ApiOperation({ summary: 'Obtener detalle de un ticket' })
   @ApiResponse({ status: 200, description: 'Detalle del ticket retornado' })
@@ -120,3 +115,4 @@ export class TicketsController {
     );
   }
 }
+

@@ -5,12 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-export enum UserRole {
-  ADMIN = 'ADMIN',
-  TECHNICIAN = 'TECHNICIAN',
-  CLIENT = 'CLIENT',
-}
+import { UserRole } from '../enums/user-role.enum';
 
 @Entity({ schema: 'helpdesk', name: 'users' })
 export class User {
@@ -23,13 +18,13 @@ export class User {
   @Column({ type: 'text', unique: true })
   email: string;
 
-  @Column({ type: 'text', name: 'password_hash' })
+  @Column({ name: 'password_hash', type: 'text' })
   passwordHash: string;
 
-  @Column({ type: 'enum', enum: UserRole, enumName: 'user_role' })
+  @Column({ type: 'enum', enum: UserRole })
   role: UserRole;
 
-  @Column({ type: 'boolean', default: true, name: 'is_active' })
+  @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

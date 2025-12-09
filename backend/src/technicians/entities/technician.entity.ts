@@ -12,12 +12,12 @@ import { Ticket } from '../../tickets/entities/ticket.entity';
 export enum TechnicianAvailability {
   AVAILABLE = 'AVAILABLE',
   BUSY = 'BUSY',
-  OFF = 'OFF',
+  OFFLINE = 'OFFLINE',
 }
 
 @Entity({ schema: 'helpdesk', name: 'technicians' })
 export class Technician {
-  @PrimaryColumn('uuid', { name: 'user_id' })
+  @PrimaryColumn({ name: 'user_id', type: 'uuid' })
   userId: string;
 
   @OneToOne(() => User, { eager: true, onDelete: 'CASCADE' })
@@ -25,14 +25,12 @@ export class Technician {
   user: User;
 
   @Column({ type: 'text' })
-  name: string;
-
-  @Column({ type: 'text' })
   specialty: string;
 
   @Column({
     type: 'enum',
     enum: TechnicianAvailability,
+    enumName: 'technician_availability',
     default: TechnicianAvailability.AVAILABLE,
   })
   availability: TechnicianAvailability;

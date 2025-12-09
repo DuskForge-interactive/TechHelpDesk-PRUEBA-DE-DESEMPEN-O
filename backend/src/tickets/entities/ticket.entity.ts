@@ -50,7 +50,7 @@ export class Ticket {
   })
   priority: TicketPriority;
 
-  @ManyToOne(() => Client, (client) => client.tickets, { eager: true })
+  @ManyToOne(() => Client, { eager: true })
   @JoinColumn({ name: 'client_id' })
   client: Client;
 

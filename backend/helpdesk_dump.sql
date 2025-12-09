@@ -5,7 +5,7 @@ CREATE SCHEMA IF NOT EXISTS helpdesk;
 CREATE TYPE helpdesk.user_role AS ENUM ('ADMIN', 'TECHNICIAN', 'CLIENT');
 CREATE TYPE helpdesk.ticket_status AS ENUM ('OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED');
 CREATE TYPE helpdesk.ticket_priority AS ENUM ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL');
-CREATE TYPE helpdesk.technician_availability AS ENUM ('AVAILABLE', 'BUSY', 'OFF');
+CREATE TYPE helpdesk.technician_availability AS ENUM ('AVAILABLE', 'BUSY', 'OFFLINE');
 
 CREATE TABLE IF NOT EXISTS helpdesk.users (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS helpdesk.categories (
 
 CREATE TABLE IF NOT EXISTS helpdesk.clients (
   user_id uuid PRIMARY KEY REFERENCES helpdesk.users(id) ON DELETE CASCADE,
-  name text NOT NULL,
   company text NULL,
   contact_email text NOT NULL,
   CONSTRAINT clients_user_unique UNIQUE (user_id)
@@ -33,7 +32,6 @@ CREATE TABLE IF NOT EXISTS helpdesk.clients (
 
 CREATE TABLE IF NOT EXISTS helpdesk.technicians (
   user_id uuid PRIMARY KEY REFERENCES helpdesk.users(id) ON DELETE CASCADE,
-  name text NOT NULL,
   specialty text NOT NULL,
   availability helpdesk.technician_availability NOT NULL DEFAULT 'AVAILABLE'
 );
@@ -66,12 +64,12 @@ ON CONFLICT (id) DO NOTHING;
 INSERT INTO helpdesk.categories (id, name) VALUES (1, 'Hardware'), (2, 'Software')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO helpdesk.clients (user_id, name, company, contact_email)
-VALUES ('00000000-0000-0000-0000-000000000002', 'Client One', 'Tech Corp', 'client@helpdesk.test')
+INSERT INTO helpdesk.clients (user_id, company, contact_email)
+VALUES ('00000000-0000-0000-0000-000000000002', 'Tech Corp', 'client@helpdesk.test')
 ON CONFLICT (user_id) DO NOTHING;
 
-INSERT INTO helpdesk.technicians (user_id, name, specialty, availability)
-VALUES ('00000000-0000-0000-0000-000000000003', 'Tech One', 'Hardware', 'AVAILABLE')
+INSERT INTO helpdesk.technicians (user_id, specialty, availability)
+VALUES ('00000000-0000-0000-0000-000000000003', 'Hardware', 'AVAILABLE')
 ON CONFLICT (user_id) DO NOTHING;
 
 INSERT INTO helpdesk.tickets (title, description, status, priority, client_id, technician_id, category_id)

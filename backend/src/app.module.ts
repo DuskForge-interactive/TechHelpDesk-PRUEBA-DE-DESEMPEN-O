@@ -1,4 +1,3 @@
-// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -19,27 +18,28 @@ import { TicketsService } from './tickets.service';
 
 @Module({
   imports: [
-    
+
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    
+
     TypeOrmModule.forRoot({
-      ...dataSourceOptions, 
-      autoLoadEntities: true, 
+      ...dataSourceOptions,
+      autoLoadEntities: true,
     }),
 
-    
-    UsersModule,        
-    AuthModule,         
-    CategoriesModule,   
-    ClientsModule,      
-    TechniciansModule, 
-    TicketsModule,      
-    HealthModule,       
+
+    UsersModule,
+    AuthModule,
+    CategoriesModule,
+    ClientsModule,
+    TechniciansModule,
+    TicketsModule,
+    HealthModule,
   ],
-  controllers: [AppController], 
-  providers: [AppService, TicketsService],  
+  controllers: [AppController],
+  providers: [AppService, TicketsService],
 })
 export class AppModule {}
+

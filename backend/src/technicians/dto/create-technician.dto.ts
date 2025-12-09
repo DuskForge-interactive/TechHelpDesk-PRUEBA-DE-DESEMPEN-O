@@ -7,10 +7,6 @@ export class CreateTechnicianDto {
   @IsUUID()
   userId: string;
 
-  @ApiProperty({ example: 'John Tech' })
-  @IsString()
-  name: string;
-
   @ApiProperty({ example: 'Hardware' })
   @IsString()
   specialty: string;

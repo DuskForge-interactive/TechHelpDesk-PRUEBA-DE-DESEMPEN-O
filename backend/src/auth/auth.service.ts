@@ -11,13 +11,13 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, plainPassword: string): Promise<User> {
+  async validateUser(email: string, password: string): Promise<User> {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    const passwordOk = await bcrypt.compare(plainPassword, user.passwordHash);
+    const passwordOk = await bcrypt.compare(password, user.passwordHash);
     if (!passwordOk) {
       throw new UnauthorizedException('Credenciales inválidas');
     }

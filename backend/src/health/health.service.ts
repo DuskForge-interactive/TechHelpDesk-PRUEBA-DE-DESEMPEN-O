@@ -7,7 +7,6 @@ export class HealthService {
 
   async check() {
     try {
-      // Verifica conexión a Supabase/Postgres
       await this.dataSource.query('select 1');
 
       return {
@@ -23,3 +22,4 @@ export class HealthService {
     }
   }
 }
+

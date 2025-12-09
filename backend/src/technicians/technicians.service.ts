@@ -37,10 +37,8 @@ export class TechniciansService {
 
     const technician = this.techRepo.create({
       user,
-      name: dto.name,
       specialty: dto.specialty,
-      availability:
-        dto.availability ?? TechnicianAvailability.AVAILABLE,
+      availability: dto.availability ?? TechnicianAvailability.AVAILABLE,
     });
 
     return this.techRepo.save(technician);

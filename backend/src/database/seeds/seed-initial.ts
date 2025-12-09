@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import dataSource from '../typeorm-datasource';
-import { User, UserRole } from '../../users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
+import { UserRole } from '../../users/enums/user-role.enum';
 import { Client } from '../../clients/entities/client.entity';
 import {
   Technician,
@@ -8,6 +9,7 @@ import {
 } from '../../technicians/entities/technician.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { Ticket, TicketPriority, TicketStatus } from '../../tickets/entities/ticket.entity';
+import * as bcrypt from 'bcrypt';
 
 async function runSeed() {
   await dataSource.initialize();
@@ -19,14 +21,18 @@ async function runSeed() {
   const categoryRepo = dataSource.getRepository(Category);
   const ticketRepo = dataSource.getRepository(Ticket);
 
+  const adminPasswordHash = await bcrypt.hash('Admin123*', 10);
+  const techPasswordHash = await bcrypt.hash('Tech123*', 10);
+  const clientPasswordHash = await bcrypt.hash('Client123*', 10);
 
   let admin = await userRepo.findOne({ where: { email: 'admin@helpdesk.com' } });
   if (!admin) {
     admin = userRepo.create({
       name: 'Admin Principal',
       email: 'admin@helpdesk.com',
-      passwordHash: '$2b$10$hashAdminCambialo',
+      passwordHash: adminPasswordHash,
       role: UserRole.ADMIN,
+      isActive: true,
     });
     await userRepo.save(admin);
     console.log('👑 Admin creado');
@@ -38,8 +44,9 @@ async function runSeed() {
     techUser = userRepo.create({
       name: 'Técnico Soporte 1',
       email: 'tech1@helpdesk.com',
-      passwordHash: '$2b$10$hashTechCambialo',
+      passwordHash: techPasswordHash,
       role: UserRole.TECHNICIAN,
+      isActive: true,
     });
     await userRepo.save(techUser);
     console.log('🛠 Técnico (user) creado');
@@ -73,8 +80,9 @@ async function runSeed() {
     clientUser = userRepo.create({
       name: 'Cliente Demo',
       email: 'client1@empresa.com',
-      passwordHash: '$2b$10$hashClienteCambialo',
+      passwordHash: clientPasswordHash,
       role: UserRole.CLIENT,
+      isActive: true,
     });
     await userRepo.save(clientUser);
     console.log('👤 Cliente (user) creado');

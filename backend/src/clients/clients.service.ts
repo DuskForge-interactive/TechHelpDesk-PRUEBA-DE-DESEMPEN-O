@@ -33,8 +33,8 @@ export class ClientsService {
     }
 
     const client = this.clientRepo.create({
+      userId: user.id,
       user,
-      name: dto.name,
       company: dto.company ?? null,
       contactEmail: dto.contactEmail ?? user.email,
     });

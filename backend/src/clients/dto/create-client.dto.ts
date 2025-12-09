@@ -6,10 +6,6 @@ export class CreateClientDto {
   @IsUUID()
   userId: string;
 
-  @ApiProperty({ example: 'Jane Client' })
-  @IsString()
-  name: string;
-
   @ApiPropertyOptional({ example: 'Tech Corp' })
   @IsOptional()
   @IsString()

@@ -28,7 +28,7 @@ export class ResponseInterceptor<T>
 
     return next.handle().pipe(
       map((data: any) => {
-       
+
         const hasCustomMessage =
           data &&
           typeof data === 'object' &&
@@ -56,3 +56,4 @@ export class ResponseInterceptor<T>
     );
   }
 }
+

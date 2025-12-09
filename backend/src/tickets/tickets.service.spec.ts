@@ -8,7 +8,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { AssignTicketDto } from './dto/assign-ticket.dto';
-import { UserRole } from '../users/entities/user.entity';
+import { UserRole } from '../users/enums/user-role.enum';
 import { BadRequestException } from '@nestjs/common';
 import { UpdateTicketStatusDto } from './dto/update-ticket-status.dto';
 
