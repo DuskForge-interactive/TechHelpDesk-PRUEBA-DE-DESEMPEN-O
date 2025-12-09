@@ -1,0 +1,25 @@
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+
+@Injectable()
+export class HealthService {
+  constructor(private readonly dataSource: DataSource) {}
+
+  async check() {
+    try {
+      // Verifica conexión a Supabase/Postgres
+      await this.dataSource.query('select 1');
+
+      return {
+        status: 'ok',
+        db: 'up',
+      };
+    } catch (error) {
+      throw new ServiceUnavailableException({
+        status: 'error',
+        db: 'down',
+        message: error?.message ?? 'DB connection failed',
+      });
+    }
+  }
+}

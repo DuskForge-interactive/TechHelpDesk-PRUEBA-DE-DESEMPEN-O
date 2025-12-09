@@ -1,0 +1,12 @@
+node_modules
+dist
+test
+coverage
+.git
+.gitignore
+npm-debug.log
+Dockerfile
+docker-compose.yml
+.env
+.env.*
+assets_del_proyecto
